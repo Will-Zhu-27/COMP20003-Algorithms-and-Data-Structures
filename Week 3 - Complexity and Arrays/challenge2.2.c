@@ -38,8 +38,12 @@ int main(int argc, char **argv){
 	services, so needs to be updated to severity class 'B'.
 	*/
 	/* Original: hazard1.severityClass = 'B'; */
-	/* CHANGE THE CODE HERE: */
-	hazard1.severityClass = 'B';
+	/* CHANGE THE CODE HERE: 
+	//hazard1.severityClass = 'B';*/
+	
+	//*(char *)((void *)(&hazard1) + offsetof(struct hazard, severityClass)) = 'B';
+	*(char *)((void *)(&hazard1) + sizeof(char *) + sizeof(void *) + sizeof(int) + sizeof(int)) = 'B';
+	
 	printf("Hazard 1 after class B severity update:\n");
 	printHazard(&hazard1);
 	/*
@@ -50,11 +54,19 @@ int main(int argc, char **argv){
 	changed to "Fluid leak in tank 4".
 	*/
 	/* Original: lastHazard->severityClass = 'D'; */
-	/* CHANGE THE CODE HERE: */
-	lastHazard->severityClass = 'D';
+	/* CHANGE THE CODE HERE: 
+	lastHazard->severityClass = 'D';*/
+	
+	*(char *)((void *)(lastHazard) + offsetof(struct hazard, severityClass)) = 'D';
+	
 	/* Original: lastHazard->description = "Fluid leak in tank 4"; */
-	/* CHANGE THE CODE HERE: */
-	lastHazard->description = "Fluid leak in tank 4";
+	/* CHANGE THE CODE HERE: 
+	lastHazard->description = "Fluid leak in tank 4";*/
+	
+	//*(char **)((void *)(lastHazard) + offsetof(struct hazard, description)) = "Fluid leak in tank 4";
+	//*(char **)((void *)(lastHazard)) = "Fluid leak in tank 4";
+	*(char **)(lastHazard) = "Fluid leak in tank 4";
+	
 	printf("Hazard 2 after description and D-class update:\n");
 	printHazard(&hazard2);
 	return 0;
