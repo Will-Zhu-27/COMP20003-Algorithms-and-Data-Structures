@@ -116,7 +116,7 @@ item in a new tree with null left/right pointers.
 struct bst *bstInsert(struct bst *parent, int data){
 	/* Write this function. */
 	/* recursion */ 
-	if (parent == NULL) {
+	/*if (parent == NULL) {
 		safeMallocBst(&parent);
 		parent->data = data;
 		parent->left = NULL;
@@ -128,6 +128,20 @@ struct bst *bstInsert(struct bst *parent, int data){
 	} else {
 		parent->right = bstInsert(parent->right, data);
 	}
+	return parent;*/
+	/* iterative */ 
+	struct bst **nodePtrPtr = &parent;
+	while(*nodePtrPtr) {
+		if ((*nodePtrPtr)->data > data) {
+			nodePtrPtr = &((*nodePtrPtr)->left);
+		} else {
+			nodePtrPtr = &((*nodePtrPtr)->right);
+		}
+	}
+	safeMallocBst(nodePtrPtr);
+	(*nodePtrPtr)->data = data;
+	(*nodePtrPtr)->left = NULL;
+	(*nodePtrPtr)->right = NULL;
 	return parent;
 }
 
