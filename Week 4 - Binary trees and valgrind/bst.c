@@ -58,6 +58,7 @@ struct bst *bstInsert(struct bst *parent, int data){
 	struct bst **currentPtrPtr = &parent;
 	struct bst *currentParentPtr = NULL;
 	int diff;
+	
 	while(*currentPtrPtr) {
 		currentParentPtr = *currentPtrPtr;
 		if ((*currentPtrPtr)->data > data) {	
@@ -95,6 +96,23 @@ void freeTree(struct bst *parent){
 	free(parent);
 }
 
+/* value lookup function */
+void lookup(int data, struct bst *bst) {
+	int count = 0;
+	while(bst) {
+		count++;
+		if (bst->data == data) {
+			printf("find %d\n", data);
+			printf("the number of comparison is %d times.\n", count);
+			return;
+		} else if (bst->data < data) {
+			bst = bst->right;
+		} else {
+			bst = bst->left;
+		}
+	}
+	printf("didn't find %d, the number of comparison is %d times.\n", data, count);
+}
 /* Draws the tree. You will need to change this if your bst uses different names. */
 /* You needn't understand how this works, but you're welcome to try. */
 void drawTree(struct bst *parent){

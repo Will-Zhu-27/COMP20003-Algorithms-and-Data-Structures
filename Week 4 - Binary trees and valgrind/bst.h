@@ -16,3 +16,5 @@ Frees the given tree, doing nothing on an empty tree, freeing child trees
 void freeTree(struct bst *parent);
 /* safe to use malloc to create a node */
 void safeMallocBst(struct bst **nodePtrPtr);
+/* value lookup function */
+void lookup(int data, struct bst *bst);

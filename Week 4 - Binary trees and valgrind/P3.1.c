@@ -5,12 +5,19 @@
 #include "bst.h"
 int main(int argc, char **argv){
 	int inputData;
+	int lookupValue;
 	struct bst *bst = NULL;
 	while(scanf("%d",&inputData) > 0){
 		bst = bstInsert(bst, inputData);
 	}
 	drawTree(bst);
-	fflush(stdout);
+	//fflush(stdout);
+	getchar();
+	
+	printf("type a value to lookup\n");
+	while(scanf("%d",&lookupValue) == 1){
+		lookup(lookupValue, bst);
+	}
 	freeTree(bst);
 	return 0;
 }
