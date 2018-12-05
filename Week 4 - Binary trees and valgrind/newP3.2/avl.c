@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "llqueue.h"
-#include "bst.h"
+#include "avl.h"
 struct bst {
 	struct bst *left;
 	struct bst *right;
@@ -20,6 +20,12 @@ void leftRotation(struct bst *node);
 /* after insert a node, update all node's counter and depth using the inserted node as parameter */
 void update(struct bst **node);
 void keepBalanced(struct bst *node);
+/* Calculate the number of spaces which need to appear before and after the
+data point at a given depth to allow a single character to occur in all
+children below it. */
+int spacesAtDepth(int depth);
+/* Calculate the depth to the deepest child of a given node. */
+int countDepth(struct bst *parent);
 
 void rightRotation(struct bst *node) {
 	struct bst *parent = node->parent;
@@ -45,8 +51,7 @@ void rightRotation(struct bst *node) {
 	if (lRChild) {
 		lRChild->parent = node;
 	}
-	printf("右旋转函数结束\n");
-	//printf("从%d节点开始更新");
+	//printf("右旋转函数结束\n");
 	update(&node);
 }
 
@@ -81,9 +86,9 @@ The function you are to write. Takes a parent pointer (null for the root),
 and returns the tree with the child in the right position. Returns the
 item in a new tree with null left/right pointers.
 */
-struct bst *bstInsert(struct bst *parent, int data){
+struct bst *avlInsert(struct bst *bst, int data){
 	/* Write this function. */
-	struct bst **currentNodePtr = &parent;
+	struct bst **currentNodePtr = &bst;
 	struct bst *parentCurrentNode = NULL;
 	
 	while (*currentNodePtr) {
@@ -101,12 +106,12 @@ struct bst *bstInsert(struct bst *parent, int data){
 	(*currentNodePtr)->parent = parentCurrentNode;
 	(*currentNodePtr)->depth = -1;
 	(*currentNodePtr)->counter = 0;
-	printf("新节点%d的前一个节点是",(*currentNodePtr)->data);
+	/*printf("新节点%d的前一个节点是",(*currentNodePtr)->data);
 	if ((*currentNodePtr)->parent) {
 		printf("%d\n",(*currentNodePtr)->parent->data);
 	} else {
 		printf("null\n");
-	}
+	}*/
 	/* update all node's depth and counter */
 	update(currentNodePtr);
 	/*if ((*currentNodePtr)->data == 3) {
@@ -116,60 +121,25 @@ struct bst *bstInsert(struct bst *parent, int data){
 	}*/
 	/* keep balanced */
 	keepBalanced(*currentNodePtr);
-	while(parent->parent) {
-		parent = parent->parent;
+	/* return the root of the tree */
+	while(bst->parent) {
+		bst = bst->parent;
 	}
-	/*
-	printf("插入结束\nroot is %d\n",parent->data);
-	if (parent->data == 2 && parent->left && parent->right) {
-		printf("lChild is %d, depth is %d, counter is %d\n", parent->left->data, parent->left->depth, parent->left->counter);
-		if (!parent->left->left) {
-			printf("left is null\n");
-		} else {
-			exit(0);
-		}
-		if (!parent->left->right) {
-			printf("right is null\n");
-		} else {
-			exit(0);
-		}
-		printf("rChild is %d, depth is %d, counter is %d\n", parent->right->data, parent->left->depth, parent->left->counter);
-		if (!parent->right->left) {
-			printf("left is null\n");
-		} else {
-			printf("left exists\n");
-			exit(0);
-		}
-		if (!parent->right->right) {
-			printf("right is null\n");
-		} else {
-			printf("right exists\n");
-			exit(0);
-		}
-		drawTree(parent);
-	}*/
-	return parent;
+	return bst;
 }
 /* after insert a node, update all node's counter and depth using the inserted node as parameter */
 void update(struct bst **node) {
 	struct bst **currentNodePtr = node;
-	//int newCounter = 0;
 	/* update all node's depth and counter */
 	while(*currentNodePtr) {
-		printf("现在更新节点%d的counter值\n",(*currentNodePtr)->data); 
+		//printf("现在更新节点%d的counter值\n",(*currentNodePtr)->data); 
 		(*currentNodePtr)->depth = countDepth((*currentNodePtr));
 		(*currentNodePtr)->counter = countDepth((*currentNodePtr)->left) - countDepth((*currentNodePtr)->right);
-		/*if (newCounter == (*currentNodePtr)->counter) {
-			break;
-		} else {
-			(*currentNodePtr)->counter = newCounter;
-		}*/
 		currentNodePtr = &((*currentNodePtr)->parent);
 	}
 }
 
 void keepBalanced(struct bst *node) {
-	printf("KeepBalanced from %d\n", node->data);
 	while(node) {
 		if (node->counter < -1) {
 			if (node->right->counter > 0) {	
@@ -194,12 +164,7 @@ void freeTree(struct bst *parent){
 	freeTree(parent->right);
 	free(parent);
 }
-/* Calculate the number of spaces which need to appear before and after the
-data point at a given depth to allow a single character to occur in all
-children below it. */
-int spacesAtDepth(int depth);
-/* Calculate the depth to the deepest child of a given node. */
-int countDepth(struct bst *parent);
+
 /* Draws the tree. You will need to change this if your bst uses different names. */
 /* You needn't understand how this works, but you're welcome to try. */
 void drawTree(struct bst *parent){
@@ -273,6 +238,25 @@ void drawTree(struct bst *parent){
 		free(currentQueue);
 	}
 }
+
+struct bst *lookup(int data, struct bst *bst) {
+	struct bst *node = bst;
+	while (node) {
+		if (node->data == data) {
+			printf("find it!\n");
+			break;
+		} else if (node->data > data) {
+			node = node->left;
+		} else {
+			node = node->right;
+		}
+	}
+	if (node == NULL) {
+		printf("There is no node whose data is %d\n", data);
+	}
+	return node;
+}
+
 int countDepth(struct bst *parent){
 	int leftDepth;
 	int rightDepth;
@@ -280,7 +264,7 @@ int countDepth(struct bst *parent){
 		/* Here we assume a leaf node is at depth -1, other choices are possible. */
 		return -1;
 	}
-	printf("countDepth: %d\n", parent->data);
+	//printf("countDepth: %d\n", parent->data);
 	leftDepth = countDepth(parent->left);
 	rightDepth = countDepth(parent->right);
 	if(leftDepth > rightDepth){
