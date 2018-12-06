@@ -100,6 +100,10 @@ struct bst *avlInsert(struct bst *bst, int data){
 		}
 	}
 	(*currentNodePtr) = (struct bst *)malloc(sizeof(struct bst));
+	if (*currentNodePtr == NULL) {
+		printf("malloc error!\n");
+		exit(EXIT_FAILURE);
+	}
 	(*currentNodePtr)->data = data;
 	(*currentNodePtr)->right = NULL;
 	(*currentNodePtr)->left = NULL;
