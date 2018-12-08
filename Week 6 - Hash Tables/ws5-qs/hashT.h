@@ -20,7 +20,8 @@ void insertDH5(struct hashTable *table, int *key, void *value);
     the value is placed in this location. If used >= size, 
     the function returns doing nothing. */
 void insertDH(struct hashTable *table, int *key, void *value, int hash2key);
-
+/* free the hashTable */
+void freeHashTable(struct hashTable *table);
 /* Allocates space for a hash table and assigns its hash, insert
     and print (for a single data item) functions. */
 struct hashTable *create(int tableSize, int *(*hash)(void *), 

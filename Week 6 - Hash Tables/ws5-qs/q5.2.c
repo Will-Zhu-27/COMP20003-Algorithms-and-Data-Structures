@@ -55,5 +55,7 @@ int main(int argc, char **argv){
     }
     printf("Finished inserting items into Double Hashing hash table\n");
     
+    freeHashTable(DH5Table);
+    freeHashTable(LPTable);
     return 0;
 }
