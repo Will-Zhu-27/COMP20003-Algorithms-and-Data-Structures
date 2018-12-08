@@ -28,7 +28,7 @@ void insertDH5(struct hashTable *table, int *key, void *value){
 
 void insertDH(struct hashTable *table, int *key, void *value, int hash2key){
     /* Write this. */
-    
+    table->
     
     
     
