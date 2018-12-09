@@ -4,6 +4,7 @@
 #define N 133
 #define E 5
 #define D 11
+#define BITS_PER_BYTE 8
 
 /* Returns an int representing the given
     value encrypted using RSA using the
@@ -21,10 +22,17 @@ unsigned int decrypt(unsigned int n,
 unsigned int encrypt(unsigned int n, 
     unsigned int e, unsigned int value){
     /* Do (value^e) mod n */
+    unsigned int i;
+    unsigned int result = 1;
+    for(i = 0; i < (sizeof(int)*BITS_PER_BYTE); i++) {
+     	result = (result * result) % n;
+     	if((e >> ((sizeof(int) * BITS_PER_BYTE) - i - 1)) & 1) {
+     		result = (result * value) % n;
+		}
+	}
     
     
-    
-    
+    return result;
 }
 
 unsigned int decrypt(unsigned int n,
@@ -43,12 +51,11 @@ int main(int argc, char *argv){
     int i;
     
     for(i = 0; i < sizeof(toEncrypt)/sizeof(toEncrypt[0]); i++){
-        printf("%c",encrypt(N, E, toEncrypt[i]));
+        printf("%c", encrypt(N, E, toEncrypt[i]));
     }
     for(i = 0; i < sizeof(toDecrypt)/sizeof(toDecrypt[0]); i++){
-        printf("%c",decrypt(N, D, toDecrypt[i]));
+        printf("%c", decrypt(N, D, toDecrypt[i]));
     }
     printf("\n");
-    
     return 0;
 }
