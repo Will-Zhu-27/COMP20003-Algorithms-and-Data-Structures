@@ -1,19 +1,8 @@
-/* merge.h */
-/* Bottom-up mergeSorts the given list. */
-int *mergeSort(int *list, int size);
-
-/* merge.c */
-#include <stdlib.h>
-#include <assert.h>
-int *mergeSort(int *list, int size){
-    /* FILL IN loop */
-}
-
 /* main.c */
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-/* #include "merge.h" */
+#include "merge.h"
 
 /* 8 is a power of 2, so should be the least trouble. */
 /* Try 7 to have to deal with an empty list */
