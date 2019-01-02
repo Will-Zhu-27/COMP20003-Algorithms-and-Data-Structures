@@ -70,7 +70,7 @@ void update(struct pqueue *queue, int index){
 
 int empty(struct pqueue *queue){
     /* Write this. */
-    return queue->used;
+    return queue->used == 0;
 }
 
 void freeQueue(struct pqueue *queue){
