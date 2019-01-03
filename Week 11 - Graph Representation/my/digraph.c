@@ -100,3 +100,53 @@ void addEdge(struct digraph *graph, int source, int destination, int weight) {
 	newEdge->next = graph->adjacencyList[source - graph->lowIndex];
 	graph->adjacencyList[source - graph->lowIndex] = newEdge;
 }
+
+int *getNodes(struct digraph *graph, int *size) {
+	char *bitmask;
+	int i, j;
+	int count;
+	int *returnList;
+	struct weightedEdge *current;
+	bitmask = (char *) malloc(sizeof(char) * graph->used);
+	assert(bitmask);
+	for (i = 0; i < graph->used; i++) {
+		bitmask[i] = (char)0;
+	}
+	for (i = 0; i < graph->used; i++) {
+		if (graph->adjacencyList[i]) {
+			bitmask[i] = (char)1;
+			current = graph->adjacencyList[i];
+			while(current) {
+				bitmask[current->destIndex - graph->lowIndex] = (char)1;
+				current = current->next;
+			}
+		}
+	}
+	
+	count = 0;
+	for (i = 0; i < graph->used; i++) {
+		if (bitmask[i]){
+			count++;
+		}
+	}
+	
+	returnList = (int *)malloc(sizeof(int) * (count + 1)); //ΪʲôҪ+1��
+	
+	j = 0;
+	for (i = 0; i < graph->used; i++) {
+		if (bitmask[i]) {
+			returnList[j] = i + graph->lowIndex;
+			j++;
+		}
+	} 
+	
+	returnList[j] = graph->lowIndex - 1;
+	
+	if (size) {
+		*size = j;
+	}
+	
+	free(bitmask);
+	
+	return returnList;
+}
