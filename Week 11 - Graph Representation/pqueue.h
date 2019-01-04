@@ -23,7 +23,7 @@ void *dequeue(struct pqueue *queue);
     For now, presume this does nothing (or make it 
     read through the array and update priorities,
     it depends on your dequeue implementation). */
-void update(struct pqueue *queue, int index);
+void update(struct pqueue *queue, int index, int (*updateFunc)(void *));
 
 /* Returns 1 if the queue is empty, 0 otherwise. */
 int empty(struct pqueue *queue);

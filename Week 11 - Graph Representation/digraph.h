@@ -1,5 +1,8 @@
 /* digraph.h */
+#include <limits.h>
+
 struct digraph;
+
 
 /* Return type for edges. 
     Linked list concrete data type. */

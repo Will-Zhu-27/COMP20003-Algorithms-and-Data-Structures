@@ -63,8 +63,12 @@ void *dequeue(struct pqueue *queue){
     return returnValue;
 }
 
-void update(struct pqueue *queue, int index){
+void update(struct pqueue *queue, int index, int (*updateFunc)(void *)){
     /* Do whatever is appropriate. */
+    int i;
+    for (i = 0; i < queue->used; i++) {
+    	queue->priority[i] = updateFunc(queue->dataList[i]);
+	}
     return;
 }
 

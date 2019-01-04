@@ -1,11 +1,14 @@
 /* dijkstra.c */
+#ifndef _DIGRAPH_H_
+#define _DIGRAPH_H_
 #include "digraph.h"
+#endif
 #include "dijkstra.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include "pqueue.h"
-/* NOTE: If you didn't write pqueue.h & pqueue.c last week, consider doing
-    so before this exercise. */
+#include <assert.h>
+
 struct dijkQsturct;
 
 struct dijkQstruct {
@@ -51,6 +54,55 @@ struct dijkstraRes *dijkstra(struct digraph *graph, int source){
 	assert(queueItems);
 	inQueue = (int *) malloc(sizeof(int) * nodes);
 	assert(inQueue);
+	
+	for (i = 0; i < nodes; i++) {
+		visited[i] = 0;
+		shortestDists[i] = NOPATH;
+		(queueItems[i]).id = i;
+		(queueItems[i]).shortestDist = &(shortestDists[i]);
+		inQueue[i] = 0;
+		preds[i] = NOPRED;
+	}
+	
+	shortestDists[convertIndex(ids, source)] = 0;
+	enqueue(pq, 0, &(queueItems[convertIndex(ids, source)]));
+	
+	while(!empty(pq)) {
+		current = dequeue(pq);
+		if (visited[current->id ]) {
+			continue;
+		}
+		visited[current->id] = 1;
+		
+		edgeList = getAdjacent(graph, ids, current->id);
+		
+		while(edgeList) {
+			if (edgeList->weight + shortestDists[current->id] < shortestDists[edgeList->destIndex]) {
+				shortestDists[edgeList->destIndex] = edgeList->weight + shortestDists[current->id];
+				preds[edgeList->destIndex] = current->id;
+				if (inQueue[edgeList->destIndex]) {
+					update(pq, 0, updatedijkQstruct);
+				} else {
+					enqueue(pq, shortestDists[edgeList->destIndex], &(queueItems[edgeList->destIndex]));
+				}
+			}
+			nextEdge = edgeList->next;
+			free(edgeList);
+			edgeList = nextEdge;
+		}
+	}
+	free(visited);
+	free(queueItems);
+	freeQueue(pq);
+	free(inQueue);
+	
+	res->sourceNode = convertIndex(ids, source);
+	res->shortestPaths = shortestDists;
+	res->indices = ids;
+	res->preds = preds;
+	res->nodeCount = nodes;
+	
+	return res;
 }
 
 void printDijkstra(struct dijkstraRes *res){

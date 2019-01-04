@@ -1,7 +1,13 @@
 /* dijkstra.h */
+
+#ifndef _DIGRAPH_H_
+#define _DIGRAPH_H_
 #include "digraph.h"
+#endif
+
 #include <limits.h>
 #define NOPATH INT_MAX
+#define NOPRED -1
 struct dijkstraRes {
     /* The node that all paths originate from, index is into
         indices list. */
