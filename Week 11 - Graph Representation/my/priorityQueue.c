@@ -111,3 +111,16 @@ void downHeap(struct priorityQueue *pq) {
 	pq->dataList[i] = tempData;
 }
 
+void freeQueue(struct priorityQueue *pq) {
+	if (!pq) {
+		return;
+	}
+	if (pq->dataList) {
+		free(pq->dataList);
+	}
+	if (pq->priority) {
+		free (pq->priority);
+	}
+	free (pq);
+}
+
