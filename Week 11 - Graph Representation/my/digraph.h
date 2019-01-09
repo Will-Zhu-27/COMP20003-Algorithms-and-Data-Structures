@@ -5,19 +5,22 @@ struct weightedEdge {
 	struct weightedEdge *next;
 };
 struct digraph {
-	int *vertex;
+	char *vertex;
 	struct weightedEdge **adjacencyList;
 	int capacity;
 };
 
 struct digraph *newDigraph();
 
-int retIndex(struct digraph *graph, int vertex);
+int retIndex(struct digraph *graph, char vertex);
 
-void addVertex(struct digraph *graph, int vertex);
+void addVertex(struct digraph *graph, char vertex);
 
-void addEdge(struct digraph *graph, int source, int destination, int weight);
+void addEdge(struct digraph *graph, char source, char destination, int weight);
 
 void freeDigraph(struct digraph *graph);
 
-void printEdge(struct digraph *graph, int vertex);
+void printEdge(struct digraph *graph, char vertex);
+
+/* judge whether there is this vertex */
+int hasVertex(struct digraph *graph, char vertex);

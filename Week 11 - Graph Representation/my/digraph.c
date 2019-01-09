@@ -7,9 +7,6 @@
 #include "digraph.h"
 #endif
 
-/* judge whether there is this vertex */
-int hasVertex(struct digraph *graph, int vertex);
-
 struct digraph *newDigraph() {
 	struct digraph *retDigraph = (struct digraph *) malloc(sizeof(struct digraph));
 	assert(retDigraph);
@@ -19,9 +16,10 @@ struct digraph *newDigraph() {
 	retDigraph->capacity = 0;
 	
 	return retDigraph;
-}
+};
+
 /* judge whether there is this vertex */
-int hasVertex(struct digraph *graph, int vertex) {
+int hasVertex(struct digraph *graph, char vertex) {
 	int i, flag = 0;
 	for (i = 0; i < graph->capacity; i++) {
 		if((graph->vertex)[i] == vertex) {
@@ -32,7 +30,7 @@ int hasVertex(struct digraph *graph, int vertex) {
 	return flag;
 }
 
-int retIndex(struct digraph *graph, int vertex) {
+int retIndex(struct digraph *graph, char vertex) {
 	int index;
 	for (index = 0; index < graph->capacity; index++) {
 		if((graph->vertex)[index] == vertex) {
@@ -42,7 +40,7 @@ int retIndex(struct digraph *graph, int vertex) {
 	return index;
 }
 
-void addVertex(struct digraph *graph, int vertex) {
+void addVertex(struct digraph *graph, char vertex) {
 	if (hasVertex(graph, vertex)) {
 		return;
 	}
@@ -53,7 +51,7 @@ void addVertex(struct digraph *graph, int vertex) {
 	graph->capacity++;
 }
 
-void addEdge(struct digraph *graph, int source, int destination, int weight) {
+void addEdge(struct digraph *graph, char source, char destination, int weight) {
 	struct weightedEdge *newEdge = NULL;
 	int index;
 	
@@ -91,12 +89,12 @@ void freeDigraph(struct digraph *graph) {
 	free(graph);
 }
 
-void printEdge(struct digraph *graph, int vertex) {
+void printEdge(struct digraph *graph, char vertex) {
 	int index;
 	struct weightedEdge *printEdge;
 	/* return if the vertex is not in the digraph */
 	if (!hasVertex(graph, vertex)) {
-		printf("Vertex %d is not in the directed graph.\n", vertex);
+		printf("Vertex %c is not in the directed graph.\n\n", vertex);
 		return;
 	}
 	
@@ -105,14 +103,15 @@ void printEdge(struct digraph *graph, int vertex) {
 	
 	/* return if there is no edge from this vertex */
 	if (!printEdge) {
-		printf("There is no edge from vertex %d.\n", vertex);
+		printf("There is no edge from vertex %c.\n\n", vertex);
 		return;
 	}
 	
 	/* print the edge */
 	while (printEdge) {
 		printf("       %d\n", printEdge->weight);
-		printf("%d------------>%d\n", vertex, printEdge->destVertex);
+		printf("%c------------>%c\n", vertex, printEdge->destVertex);
 		printEdge = printEdge->next;
 	}
+	printf("\n\n");
 }

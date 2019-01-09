@@ -1,21 +1,37 @@
-/* my dijkstra function */
+/* my dijkstra function for single source directed graph 
+    directed graph must be single source.
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <limits.h>
 #include "dijkstra.h"
 
+#ifndef _PRIORITYQUEUE_H_
+#define _PRIORITYQUEUE_H_
+#include "priorityQueue.h"
+#endif
+
 #ifndef _DIGRAPH_H_
 #define _DIGRAPH_H_
 #include "digraph.h"
 #endif
 
+/* prototype */
+struct dijkstraQueue;
+struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex);
+void dijkstra(struct digraph *graph, char sourceVertex);
+void printShortestPathInfo(struct dijkstraQueue *dq, int sourceIndex, int capacity);
+int retDijkstraQueueIndex(struct dijkstraQueue *dq, char vertex, int capacity);
+void run(struct dijkstraQueue *dq, int capacity);
+
+
 struct dijkstraQueue {
-    int vertex;
+    char vertex;
     struct weightedEdge *edge;
     int dist;
-    int *pred;
-}
+    struct dijkstraQueue *pred;
+};
 
 
 struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex) {
@@ -23,7 +39,7 @@ struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex) {
     struct dijkstraQueue *dq = (struct dijkstraQueue *)malloc(sizeof(struct dijkstraQueue) * graph->capacity);
     for (i = 0; i < graph->capacity; i++) {
         dq[i].vertex = graph->vertex[i];
-        dq[i].dist = MAX_INT;
+        dq[i].dist = INT_MAX;
         dq[i].edge = graph->adjacencyList[i];
         dq[i].pred = NULL;
     }
@@ -31,19 +47,52 @@ struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex) {
     return dq;
 }
 
-void dijkstra(struct digraph *graph, int sourceVertex) {
+void dijkstra(struct digraph *graph, char sourceVertex) {
     struct dijkstraQueue *dq = NULL;
     int sourceIndex;
-    int i;
 
     if (!hasVertex(graph, sourceVertex)) {
-        printf("Vertex %d is not in the graph\n", sourceVertex);
-        return;
+        printf("Vertex %c is not in the graph\n", sourceVertex);
+        exit(EXIT_FAILURE);
     }
 
     sourceIndex = retIndex(graph, sourceVertex);
     dq = initialize(graph, sourceIndex);
     run(dq, graph->capacity);
+    printShortestPathInfo(dq, sourceIndex, graph->capacity);
+    free(dq);
+}
+
+void printShortestPathInfo(struct dijkstraQueue *dq, int sourceIndex, int capacity) {
+    int i;
+    struct dijkstraQueue *predDijkstra;
+    for (i = 0; i < capacity; i++) {
+        if (i == sourceIndex) {
+            continue;
+        }
+        if (!dq[i].pred) {
+            printf("From vertex %c to %c, no path.\n", dq[sourceIndex].vertex, dq[i].vertex);
+            continue;
+        }
+        printf("From vertex %c to %c, the shorest distance is %d.\n", dq[sourceIndex].vertex, dq[i].vertex, dq[i].dist);
+        printf("Path: %c", dq[i].vertex);
+        predDijkstra = dq[i].pred;
+        while (predDijkstra) {
+            printf("<--%c", predDijkstra->vertex);
+            predDijkstra = predDijkstra->pred;
+        }
+        printf("\n\n");
+    }
+}
+
+int retDijkstraQueueIndex(struct dijkstraQueue *dq, char vertex, int capacity) {
+    int i;
+    for (i = 0; i < capacity; i++) {
+        if (vertex == dq[i].vertex) {
+            break;
+        }
+    }
+    return i;
 }
 
 void run(struct dijkstraQueue *dq, int capacity) {
@@ -54,20 +103,22 @@ void run(struct dijkstraQueue *dq, int capacity) {
     int i;
 
     for (i = 0; i < capacity; i++) {
-        enqueue(pq, &(dq[i]), dq[i].dist);
+        //priorityQueue.c 
+        enqueue(pq, &(dq[i]), -dq[i].dist); 
     }
     
     while(!empty(pq)) {
         dSourceVertex = (struct dijkstraQueue *)dequeue(pq);
         edge = dSourceVertex->edge;
-        dDestVertex = &(dq[retIndex(edge->destVertex)]);
         while (edge) {
+            dDestVertex = &(dq[retDijkstraQueueIndex(dq, edge->destVertex, capacity)]);
             if (dSourceVertex->dist + edge->weight < dDestVertex->dist) {
                 dDestVertex->dist = dSourceVertex->dist + edge->weight;
-                *(dDestVertex->pred) = dSourceVertex->vertex;
-                /*not finish*/
-                update(pq);
+                dDestVertex->pred = dSourceVertex;
+                changePriority(pq, dDestVertex, -dDestVertex->dist);
             }
+            edge = edge->next;
         }
     }
+    freeQueue(pq);
 }

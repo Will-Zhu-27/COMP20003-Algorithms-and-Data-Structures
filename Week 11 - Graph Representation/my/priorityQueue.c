@@ -21,7 +21,7 @@ struct priorityQueue *makePriorityQueue() {
 	ret->dataList = NULL;
 	ret->priority = NULL;
 	return ret;
-}
+};
 
 void enqueue(struct priorityQueue *pq, void *data, int priority) {
 	
@@ -154,7 +154,7 @@ void changePriority(struct priorityQueue *pq, void *data, int newPriority) {
 	}
 
 	pq->priority[i] = newPriority;
-	printf("now the priority of index: %d is %d\n", i, pq->priority[i]);
+	//printf("now the priority of index: %d is %d\n", i, pq->priority[i]);
 	update(pq);
 }
 
