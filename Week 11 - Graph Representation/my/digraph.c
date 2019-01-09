@@ -9,12 +9,6 @@
 /* judge whether there is this vertex */
 int hasVertex(struct digraph *graph, int vertex);
 
-struct weightedEdge {
-	int destVertex;
-	int weight;
-	struct weightedEdge *next;
-};
-
 struct digraph *newDigraph() {
 	struct digraph *retDigraph = (struct digraph *) malloc(sizeof(struct digraph));
 	assert(retDigraph);
@@ -53,7 +47,8 @@ void addVertex(struct digraph *graph, int vertex) {
 	}
 	graph->vertex = realloc(graph->vertex, sizeof(int) * (graph->capacity + 1));
 	(graph->vertex)[graph->capacity] = vertex;
-	graph->adjacencyList = realloc(graph->adjacencyList, sizeof(void *) * (graph->capacity + 1));
+	graph->adjacencyList = realloc(graph->adjacencyList, sizeof(struct weightedEdge *) * (graph->capacity + 1));
+	graph->adjacencyList[graph->capacity] = NULL;
 	graph->capacity++;
 }
 
@@ -61,12 +56,8 @@ void addEdge(struct digraph *graph, int source, int destination, int weight) {
 	struct weightedEdge *newEdge = NULL;
 	int index;
 	
-	if (!hasVertex(graph, source)) {
-		addVertex(graph, source);
-	}
-	if (!hasVertex(graph, destination)) {
-		addVertex(graph, destination);
-	}
+	addVertex(graph, source);
+	addVertex(graph, destination);
 	
 	index = retIndex(graph, source);
 	newEdge = (struct weightedEdge *) malloc(sizeof(struct weightedEdge));
@@ -95,5 +86,32 @@ void freeDigraph(struct digraph *graph) {
 			}
 		}
 		free (graph->adjacencyList);
+	}
+	free(graph);
+}
+
+void printEdge(struct digraph *graph, int vertex) {
+	int index;
+	struct weightedEdge *printEdge;
+	/* return if the vertex is not in the digraph */
+	if (!hasVertex(graph, vertex)) {
+		printf("Vertex %d is not in the directed graph.\n", vertex);
+		return;
+	}
+	
+	index = retIndex(graph, vertex);
+	printEdge = graph->adjacencyList[index];
+	
+	/* return if there is no edge from this vertex */
+	if (!printEdge) {
+		printf("There is no edge from vertex %d.\n", vertex);
+		return;
+	}
+	
+	/* print the edge */
+	while (printEdge) {
+		printf("       %d\n", printEdge->weight);
+		printf("%d------------>%d\n", vertex, printEdge->destVertex);
+		printEdge = printEdge->next;
 	}
 }

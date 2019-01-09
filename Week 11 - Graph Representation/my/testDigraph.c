@@ -9,8 +9,19 @@
 
 int main(int argc, char **argv) {
 	struct digraph *graph = NULL;
+	int i;
+	struct weightedEdge *temp = NULL;
 	graph = newDigraph();
-	addEdge(graph, 1, 2, 100);
+	addEdge(graph, 1, 2, 200);
+
+	addEdge(graph, 1, 3, 300);
+	
+	addEdge(graph, 2, 3, 500);
+
+	for (i = 0; i < graph->capacity; i++) {
+		printEdge(graph, graph->vertex[i]);
+	}
+	freeDigraph(graph);
 	return 0;
 }
 
