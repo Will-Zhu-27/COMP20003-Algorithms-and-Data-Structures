@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+
 #ifndef _DIGRAPH_H_
 #define _DIGRAPH_H_
 #include "digraph.h"

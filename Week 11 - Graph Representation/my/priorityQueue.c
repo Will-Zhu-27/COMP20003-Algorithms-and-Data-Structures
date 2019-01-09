@@ -4,10 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+
+#ifndef _PRIORITYQUEUE_H_
+#define _PRIORITYQUEUE_H_
 #include "priorityQueue.h"
+#endif
 
 void upHeap(struct priorityQueue *pq);
-void downHeap(struct priorityQueue *pq);
+void downHeap(struct priorityQueue *pq, int startIndex);
 
 struct priorityQueue *makePriorityQueue() {
 	struct priorityQueue *ret = NULL;
@@ -51,7 +55,7 @@ void *dequeue(struct priorityQueue *pq) {
 	pq->dataList = realloc(pq->dataList, sizeof(void *) * pq->capacity);
 	pq->priority = realloc(pq->priority, sizeof(int) * pq->capacity);
 		
-	downHeap(pq);
+	downHeap(pq, 0);
 	
 	return retValue;
 }
@@ -85,16 +89,16 @@ void upHeap(struct priorityQueue *pq) {
 	pq->dataList[i] = tempData;
 }
 
-void downHeap(struct priorityQueue *pq) {
+void downHeap(struct priorityQueue *pq, int startIndex) {
 	int i, j;
 	void *tempData;
 	int tempPriority;
 	if (pq->capacity == 1 || pq->capacity == 0) {
 		return;
 	}
-	i = 0;
-	tempData = pq->dataList[0];
-	tempPriority = pq->priority[0];
+	i = startIndex;
+	tempData = pq->dataList[i];
+	tempPriority = pq->priority[i];
 	while((i + 1) <= pq->capacity / 2) {
 		j = (i + 1) * 2 - 1;
 		if ( j < pq->capacity / 2 && pq->priority[j] < pq->priority[j + 1]) {
@@ -122,5 +126,35 @@ void freeQueue(struct priorityQueue *pq) {
 		free (pq->priority);
 	}
 	free (pq);
+}
+
+void update(struct priorityQueue *pq) {
+	int i;
+	if (!pq || pq->capacity <= 1) {
+		return;
+	}
+	for(i = pq->capacity / 2; i >= 0; i--) {
+		downHeap(pq, i);
+	}
+}
+
+void changePriority(struct priorityQueue *pq, void *data, int newPriority) {
+	int i, flag = 0;
+	for (i = 0; i < pq->capacity; i++) {
+		if (pq->dataList[i] == data) {
+			flag = 1;
+			break;
+		}
+	}
+
+	/* return if data is not in the priority queue */
+	if (!flag) {
+		printf("data is not in the priority queue\n");
+		return;
+	}
+
+	pq->priority[i] = newPriority;
+	printf("now the priority of index: %d is %d\n", i, pq->priority[i]);
+	update(pq);
 }
 

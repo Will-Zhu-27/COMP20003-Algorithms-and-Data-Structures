@@ -10,7 +10,6 @@
 int main(int argc, char **argv) {
 	struct digraph *graph = NULL;
 	int i;
-	struct weightedEdge *temp = NULL;
 	graph = newDigraph();
 	addEdge(graph, 1, 2, 200);
 
