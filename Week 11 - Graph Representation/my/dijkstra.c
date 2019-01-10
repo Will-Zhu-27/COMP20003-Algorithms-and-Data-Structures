@@ -6,10 +6,8 @@
 #include <assert.h>
 #include <limits.h>
 
-#ifndef _DIJKSTRA_H_
-#define _DIJKSTRA_H_
 #include "dijkstra.h"
-#endif
+
 
 #ifndef _PRIORITYQUEUE_H_
 #define _PRIORITYQUEUE_H_
@@ -29,6 +27,12 @@ void printShortestPathInfo(struct dijkstraQueue *dq, int sourceIndex, int capaci
 int retDijkstraQueueIndex(struct dijkstraQueue *dq, char vertex, int capacity);
 void run(struct dijkstraQueue *dq, int capacity);
 
+struct dijkstraQueue {
+    char vertex;
+    struct weightedEdge *edge;
+    int dist;
+    struct dijkstraQueue *pred;
+};
 struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex) {
     int i;
     struct dijkstraQueue *dq = (struct dijkstraQueue *)malloc(sizeof(struct dijkstraQueue) * graph->capacity);

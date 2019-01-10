@@ -20,4 +20,6 @@ void freeQueue(struct priorityQueue *pq);
 void update(struct priorityQueue *pq);
 
 /* change one data's priority and use update function to rearrange */
-void changePriority(struct priorityQueue *pq, void *data, int newPriority);
+int changePriority(struct priorityQueue *pq, void *data, int newPriority);
+
+void printDatalistAddress(struct priorityQueue *pq);

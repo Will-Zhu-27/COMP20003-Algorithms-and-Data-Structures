@@ -11,10 +11,7 @@
 #include "digraph.h"
 #endif
 
-#ifndef _DIJKSTRA_H_
-#define _DIJKSTRA_H_
 #include "dijkstra.h"
-#endif
 
 int main(int argc, char **argv) {
     struct digraph *graph = newDigraph();
@@ -51,14 +48,9 @@ int main(int argc, char **argv) {
     addEdge(graph, 'E', 'C', 10);
     addEdge(graph, 'C', 'E', 10);
     
-    for (i = 0; i < graph->capacity; i++) {
-        printf("%d is %c\n", i, graph->vertex[i]);
-    }
 
     dijkstra(graph, graph->vertex[0]);
-    /*for (i = 0; i < graph->capacity; i++) {
-        printEdge(graph, graph->vertex[i]);
-    }*/
+    
     freeDigraph(graph);
     return 0;
 }

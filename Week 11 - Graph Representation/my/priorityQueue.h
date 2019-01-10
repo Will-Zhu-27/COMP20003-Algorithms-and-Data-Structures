@@ -22,4 +22,4 @@ void update(struct priorityQueue *pq);
 /* change one data's priority and use update function to rearrange */
 int changePriority(struct priorityQueue *pq, void *data, int newPriority);
 
-void printfDatalistAddress(struct priorityQueue *pq);
+void printDatalistAddress(struct priorityQueue *pq);
