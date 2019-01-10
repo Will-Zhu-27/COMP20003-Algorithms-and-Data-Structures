@@ -5,11 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <limits.h>
-
-#ifndef _DIJKSTRA_H_
-#define _DIJKSTRA_H_
 #include "dijkstra.h"
-#endif
 
 #ifndef _PRIORITYQUEUE_H_
 #define _PRIORITYQUEUE_H_
@@ -24,10 +20,19 @@
 /* prototype */
 struct dijkstraQueue;
 struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex);
-void dijkstra(struct digraph *graph, char sourceVertex);
+void dijkstra(struct digraph *graph, int sourceVertex);
 void printShortestPathInfo(struct dijkstraQueue *dq, int sourceIndex, int capacity);
-int retDijkstraQueueIndex(struct dijkstraQueue *dq, char vertex, int capacity);
+int retDijkstraQueueIndex(struct dijkstraQueue *dq, int vertex, int capacity);
 void run(struct dijkstraQueue *dq, int capacity);
+
+
+struct dijkstraQueue {
+    int vertex;
+    struct weightedEdge *edge;
+    int dist;
+    struct dijkstraQueue *pred;
+};
+
 
 struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex) {
     int i;
@@ -42,12 +47,12 @@ struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex) {
     return dq;
 }
 
-void dijkstra(struct digraph *graph, char sourceVertex) {
+void dijkstra(struct digraph *graph, int sourceVertex) {
     struct dijkstraQueue *dq = NULL;
     int sourceIndex;
 
     if (!hasVertex(graph, sourceVertex)) {
-        printf("Vertex %c is not in the graph\n", sourceVertex);
+        printf("Vertex %d is not in the graph\n", sourceVertex);
         exit(EXIT_FAILURE);
     }
 
@@ -66,21 +71,21 @@ void printShortestPathInfo(struct dijkstraQueue *dq, int sourceIndex, int capaci
             continue;
         }
         if (!dq[i].pred) {
-            printf("From vertex %c to %c, no path.\n", dq[sourceIndex].vertex, dq[i].vertex);
+            printf("From vertex %d to %d, no path.\n", dq[sourceIndex].vertex, dq[i].vertex);
             continue;
         }
-        printf("From vertex %c to %c, the shorest distance is %d.\n", dq[sourceIndex].vertex, dq[i].vertex, dq[i].dist);
-        printf("Path: %c", dq[i].vertex);
+        printf("From vertex %d to %d, the shorest distance is %d.\n", dq[sourceIndex].vertex, dq[i].vertex, dq[i].dist);
+        printf("Path: %d", dq[i].vertex);
         predDijkstra = dq[i].pred;
         while (predDijkstra) {
-            printf("<--%c", predDijkstra->vertex);
+            printf("<--%d", predDijkstra->vertex);
             predDijkstra = predDijkstra->pred;
         }
         printf("\n\n");
     }
 }
 
-int retDijkstraQueueIndex(struct dijkstraQueue *dq, char vertex, int capacity) {
+int retDijkstraQueueIndex(struct dijkstraQueue *dq, int vertex, int capacity) {
     int i;
     for (i = 0; i < capacity; i++) {
         if (vertex == dq[i].vertex) {
@@ -110,9 +115,7 @@ void run(struct dijkstraQueue *dq, int capacity) {
             if (dSourceVertex->dist + edge->weight < dDestVertex->dist) {
                 dDestVertex->dist = dSourceVertex->dist + edge->weight;
                 dDestVertex->pred = dSourceVertex;
-                if(!changePriority(pq, dDestVertex, -dDestVertex->dist)) {
-                    printf("from %c to %c, update priority failure\n\n\n", dSourceVertex->vertex, dDestVertex->vertex);
-                }
+                changePriority(pq, dDestVertex, -dDestVertex->dist);
             }
             edge = edge->next;
         }

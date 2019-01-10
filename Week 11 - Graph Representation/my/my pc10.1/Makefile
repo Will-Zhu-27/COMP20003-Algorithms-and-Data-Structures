@@ -10,11 +10,14 @@ dijkstra.o: dijkstra.c dijkstra.h priorityQueue.h digraph.h
 testDijkstra.o: testDijkstra.c digraph.h dijkstra.h
 	gcc -Wall -c testDijkstra.c -g
 
-priorityQueue.o: priorityQueue.c priorityQueue.h dijkstra.h
+priorityQueue.o: priorityQueue.c priorityQueue.h
 	gcc -Wall -c priorityQueue.c -g
 
 testPriorityQueue.o: testPriorityQueue.c priorityQueue.h
 	gcc -Wall -c testPriorityQueue.c -g
+
+pc10.1.o: pc10.1.c digraph.h dijkstra.h
+	gcc -Wall -c pc10.1.c -g
 
 testDigraph: digraph.o testDigraph.o
 	gcc -Wall -o testDigraph digraph.o testDigraph.o -g
@@ -24,3 +27,6 @@ testDijkstra: testDijkstra.o  priorityQueue.o digraph.o dijkstra.o
 
 testPriorityQueue: testPriorityQueue.o priorityQueue.o
 	gcc -Wall -o testPriorityQueue testPriorityQueue.o priorityQueue.o -g
+
+pc10.1: pc10.1.o priorityQueue.o digraph.o dijkstra.o
+	gcc -Wall -o pc10.1 pc10.1.o priorityQueue.o digraph.o dijkstra.o -g

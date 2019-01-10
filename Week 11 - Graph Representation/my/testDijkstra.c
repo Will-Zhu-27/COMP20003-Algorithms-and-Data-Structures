@@ -6,7 +6,15 @@
 #include "digraph.h"
 #endif
 
+#ifndef _DIGRAPH_H_
+#define _DIGRAPH_H_
+#include "digraph.h"
+#endif
+
+#ifndef _DIJKSTRA_H_
+#define _DIJKSTRA_H_
 #include "dijkstra.h"
+#endif
 
 int main(int argc, char **argv) {
     struct digraph *graph = newDigraph();
@@ -26,14 +34,25 @@ int main(int argc, char **argv) {
     addEdge(graph, 'G', 'H', 5);
     */
     addEdge(graph, 'A', 'B', 10);
+    addEdge(graph, 'B', 'A', 10);
+
     addEdge(graph, 'A', 'D', 5);
+    addEdge(graph, 'D', 'A', 5);
+
     addEdge(graph, 'B', 'C', 40);
+    addEdge(graph, 'C', 'B', 40);
+
     addEdge(graph, 'C', 'F', 20);
+    addEdge(graph, 'F', 'C', 20);
+
     addEdge(graph, 'D', 'E', 5);
+    addEdge(graph, 'E', 'D', 5);
+
     addEdge(graph, 'E', 'C', 10);
-    //addEdge(graph, 'G', 'H', 6);
+    addEdge(graph, 'C', 'E', 10);
+    
     for (i = 0; i < graph->capacity; i++) {
-        printEdge(graph, graph->vertex[i]);
+        printf("%d is %c\n", i, graph->vertex[i]);
     }
 
     dijkstra(graph, graph->vertex[0]);

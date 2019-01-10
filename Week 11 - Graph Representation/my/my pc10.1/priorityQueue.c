@@ -10,11 +10,6 @@
 #include "priorityQueue.h"
 #endif
 
-#ifndef _DIJKSTRA_H_
-#define _DIJKSTRA_H_
-#include "dijkstra.h"
-#endif
-
 void upHeap(struct priorityQueue *pq);
 void downHeap(struct priorityQueue *pq, int startIndex);
 
@@ -106,7 +101,7 @@ void downHeap(struct priorityQueue *pq, int startIndex) {
 	tempPriority = pq->priority[i];
 	while((i + 1) <= pq->capacity / 2) {
 		j = (i + 1) * 2 - 1;
-		if ( j + 1 < pq->capacity && pq->priority[j] < pq->priority[j + 1]) {
+		if ( j < pq->capacity / 2 && pq->priority[j] < pq->priority[j + 1]) {
 			j++;
 		}
 		if (tempPriority >= pq->priority[j]) {
@@ -143,10 +138,7 @@ void update(struct priorityQueue *pq) {
 	}
 }
 
-/* success: 1, failure: 0 */
-int changePriority(struct priorityQueue *pq, void *data, int newPriority) {
-	printfDatalistAddress(pq);
-	printf("%p needs to change priority, new priority is %d\n\n\n", data, newPriority);
+void changePriority(struct priorityQueue *pq, void *data, int newPriority) {
 	int i, flag = 0;
 	for (i = 0; i < pq->capacity; i++) {
 		if (pq->dataList[i] == data) {
@@ -158,26 +150,11 @@ int changePriority(struct priorityQueue *pq, void *data, int newPriority) {
 	/* return if data is not in the priority queue */
 	if (!flag) {
 		printf("data is not in the priority queue\n");
-		printf("this vertex is %c, the new priority is %d, the old priority is %d\n", ((struct dijkstraQueue *)data)->vertex, newPriority, ((struct dijkstraQueue *)data)->dist);
-		printf("Now, the capacity is %d, pq has: ", pq->capacity);
-		for (i = 0; i < pq->capacity; i++) {
-			printf("    %c", ((struct dijkstraQueue *)(pq->dataList[i]))->vertex );
-		}
-		printf("\n");
-		printf("In pq %c's address is %p, ", ((struct dijkstraQueue *)(pq->dataList[0]))->vertex, (pq->dataList[0]));
-		printf("the data's address is %p\n\n\n", data);
-		return flag;
+		return;
 	}
 
 	pq->priority[i] = newPriority;
 	//printf("now the priority of index: %d is %d\n", i, pq->priority[i]);
 	update(pq);
-	return flag;
 }
 
-void printfDatalistAddress(struct priorityQueue *pq) {
-	int i;
-	for (i = 0; i < pq->capacity; i++) {
-		printf ("%d is %p, the priority is %d\n", i, pq->dataList[i], pq->priority[i]);
-	}
-}
