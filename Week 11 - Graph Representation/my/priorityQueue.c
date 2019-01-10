@@ -23,8 +23,15 @@ struct priorityQueue *makePriorityQueue() {
 	return ret;
 };
 
+/* enqueue one item into an already-formed heap and put it in right location */
 void enqueue(struct priorityQueue *pq, void *data, int priority) {
-	
+	directEnqueue (pq, data, priority);
+	upHeap(pq);
+}
+
+/* just insert it into the tail of priority queue 
+	after all items are inserted, use heapSort */
+void directEnqueue (struct priorityQueue *pq, void *data, int priority) {
 	pq->dataList = realloc(pq->dataList, sizeof(void *) * (pq->capacity + 1));
 	assert(pq->dataList);
 	pq->dataList[pq->capacity] = data;
@@ -34,7 +41,6 @@ void enqueue(struct priorityQueue *pq, void *data, int priority) {
 	pq->priority[pq->capacity] = priority;
 	
 	pq->capacity++;
-	upHeap(pq);
 }
 
 void *dequeue(struct priorityQueue *pq) {
@@ -128,7 +134,8 @@ void freeQueue(struct priorityQueue *pq) {
 	free (pq);
 }
 
-void update(struct priorityQueue *pq) {
+/* sort the datalist in pq according to the priority */
+void heapSort(struct priorityQueue *pq) {
 	int i;
 	if (!pq || pq->capacity <= 1) {
 		return;
@@ -156,7 +163,7 @@ int changePriority(struct priorityQueue *pq, void *data, int newPriority) {
 	}
 
 	pq->priority[i] = newPriority;
-	update(pq);
+	heapSort(pq);
 	return flag;
 }
 
