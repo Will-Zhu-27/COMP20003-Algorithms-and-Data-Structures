@@ -63,8 +63,8 @@ void addEdge(struct digraph *graph, int source, int destination, int weight, int
 	assert(newEdge);
 	newEdge->destVertex = destination;
 	newEdge->weight = weight;
-	newEdge->next = (graph->adjacencyList)[index];
 	newEdge->capacity = capacity;
+	newEdge->next = (graph->adjacencyList)[index];
 	(graph->adjacencyList)[index] = newEdge;
 }
 
@@ -104,7 +104,7 @@ void printEdge(struct digraph *graph, int vertex) {
 	
 	/* return if there is no edge from this vertex */
 	if (!printEdge) {
-		printf("There is no edge from vertex %d.\n\n", vertex);
+		printf("There is no edge from vertex %c.\n\n", vertex);
 		return;
 	}
 	

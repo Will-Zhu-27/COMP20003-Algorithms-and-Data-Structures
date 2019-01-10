@@ -1,11 +1,10 @@
-/* my dijkstra function for single source directed graph 
-    directed graph must be single source.
+/*  my dijkstra function for finding shortest path from one vertex
+    in directed graph, no matter single source or multi cource.
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <limits.h>
-#include "dijkstra.h"
 
 #ifndef _PRIORITYQUEUE_H_
 #define _PRIORITYQUEUE_H_
@@ -17,22 +16,18 @@
 #include "digraph.h"
 #endif
 
+#ifndef _DIJKSTRA_H_
+#define _DIJKSTRA_H_
+#include "dijkstra.h"
+#endif
+
 /* prototype */
 struct dijkstraQueue;
 struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex);
-void dijkstra(struct digraph *graph, int sourceVertex);
+struct dijkstraQueue *dijkstra(struct digraph *graph, int sourceVertex);
 void printShortestPathInfo(struct dijkstraQueue *dq, int sourceIndex, int capacity);
 int retDijkstraQueueIndex(struct dijkstraQueue *dq, int vertex, int capacity);
 void run(struct dijkstraQueue *dq, int capacity);
-
-
-struct dijkstraQueue {
-    int vertex;
-    struct weightedEdge *edge;
-    int dist;
-    struct dijkstraQueue *pred;
-};
-
 
 struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex) {
     int i;
@@ -47,7 +42,7 @@ struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex) {
     return dq;
 }
 
-void dijkstra(struct digraph *graph, int sourceVertex) {
+struct dijkstraQueue *dijkstra(struct digraph *graph, int sourceVertex) {
     struct dijkstraQueue *dq = NULL;
     int sourceIndex;
 
@@ -59,8 +54,8 @@ void dijkstra(struct digraph *graph, int sourceVertex) {
     sourceIndex = retIndex(graph, sourceVertex);
     dq = initialize(graph, sourceIndex);
     run(dq, graph->capacity);
-    printShortestPathInfo(dq, sourceIndex, graph->capacity);
-    free(dq);
+    //printShortestPathInfo(dq, sourceIndex, graph->capacity);
+    return dq;
 }
 
 void printShortestPathInfo(struct dijkstraQueue *dq, int sourceIndex, int capacity) {
@@ -70,7 +65,7 @@ void printShortestPathInfo(struct dijkstraQueue *dq, int sourceIndex, int capaci
         if (i == sourceIndex) {
             continue;
         }
-        if (!dq[i].pred) {
+        if (!dq[i].pred || dq[i].dist == INT_MAX) {
             printf("From vertex %d to %d, no path.\n", dq[sourceIndex].vertex, dq[i].vertex);
             continue;
         }
@@ -112,10 +107,12 @@ void run(struct dijkstraQueue *dq, int capacity) {
         edge = dSourceVertex->edge;
         while (edge) {
             dDestVertex = &(dq[retDijkstraQueueIndex(dq, edge->destVertex, capacity)]);
-            if (dSourceVertex->dist + edge->weight < dDestVertex->dist) {
+            if (dSourceVertex->dist != INT_MAX && dSourceVertex->dist + edge->weight < dDestVertex->dist) {
                 dDestVertex->dist = dSourceVertex->dist + edge->weight;
                 dDestVertex->pred = dSourceVertex;
-                changePriority(pq, dDestVertex, -dDestVertex->dist);
+                if(!changePriority(pq, dDestVertex, -dDestVertex->dist)) {
+                    printf("from %c to %c, update priority failure\n\n\n", dSourceVertex->vertex, dDestVertex->vertex);
+                }
             }
             edge = edge->next;
         }

@@ -5,6 +5,7 @@ struct weightedEdge {
 	int capacity;
 	struct weightedEdge *next;
 };
+
 struct digraph {
 	int *vertex;
 	struct weightedEdge **adjacencyList;

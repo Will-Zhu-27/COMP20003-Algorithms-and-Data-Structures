@@ -7,13 +7,24 @@
 #include "digraph.h"
 #endif
 
+#ifndef _DIJKSTRA_H_
+#define _DIJKSTRA_H_
 #include "dijkstra.h"
+#endif
 
 #define EDGES 27
 #define RESIDENTIAL 3
 #define WORKPLACES 10
 
+/* function prototype */
+/* if the capacity from source to workplaces is more than road capacity, return 1, otherwise return 0 */
+int testRoadCapacity(struct dijkstraQueue *dq, int district, int workers[RESIDENTIAL][WORKPLACES], int residential, int workplaces);
+/* minus the load and return the new capacity */
+int minusLoad (struct dijkstraQueue *source, int destVertex, int load);
+
 int main(int argc, char **argv){
+    struct dijkstraQueue *dq = NULL;
+    int flag = 0;
     /* 
         For this problem, nodes with index 1 - 10 are workplaces 1 - 10 and
         nodes with index 11 - 13 are the residential districts 1 - 3
@@ -28,7 +39,7 @@ int main(int argc, char **argv){
     */
     int workers[RESIDENTIAL][WORKPLACES];
     struct digraph *graph = newDigraph();
-    int i = 0, j;
+    int i = 0;
     /* 
         As edges are symmetric, only the first occurrence of each edge
         is included. 
@@ -95,14 +106,57 @@ int main(int argc, char **argv){
         which is taken to get to any workplaces from any of the
         residential districts.
     */
-    /*for (i = 0; i < EDGES; i++) {
+    /*for (i = 0; i < graph->capacity; i++) {
         printEdge(graph, i);
     }*/
     for (i = 11; i <= 13; i++) {
-        dijkstra(graph, i);
+        dq = dijkstra(graph, i);
+        if (testRoadCapacity(dq, i - WORKPLACES, workers, RESIDENTIAL, WORKPLACES) == 1) {
+            printf("Road capacity is not enough\n");
+            flag = 1;
+            free(dq);
+            break;   
+        }
+        free(dq);
     }
+    
+    if (!flag) {
+        printf("Road capacity is enough\n");
+    }
+
     
     freeDigraph(graph);
     
     return 0;
+}
+
+/* if the capacity from source to workplaces is more than road capacity, return 1, otherwise return 0 */
+int testRoadCapacity(struct dijkstraQueue *dq, int district, int workers[RESIDENTIAL][WORKPLACES], int residential, int workplaces) {
+    int i;
+    int load;
+    struct dijkstraQueue *pred = NULL, *dest = NULL;
+    for (i = 0; i < workplaces; i++) {
+        load = workers[district - 1][i];
+        dest = &(dq[i + 1]);
+        pred = dest->pred;
+        while (pred) {
+            if (minusLoad(pred, dest->vertex, load) < 0) {
+                 return 1;
+            }
+            dest = pred;
+            pred = dest->pred;  
+        }
+        
+    }
+    return 0;
+}
+
+int minusLoad (struct dijkstraQueue *source, int destVertex, int load) {
+    struct weightedEdge *edge = NULL;
+    edge = source->edge;
+    while (edge->destVertex != destVertex) {
+        edge = edge->next;
+    }
+    edge->capacity -= load;
+    return edge->capacity;
 }

@@ -4,4 +4,11 @@
 #include "digraph.h"
 #endif
 
-void dijkstra(struct digraph *graph, int sourceVertex);
+struct dijkstraQueue {
+    int vertex;
+    struct weightedEdge *edge;
+    int dist;
+    struct dijkstraQueue *pred;
+};
+
+struct dijkstraQueue *dijkstra(struct digraph *graph, int sourceVertex);
