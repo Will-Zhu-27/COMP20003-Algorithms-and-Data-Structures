@@ -15,7 +15,7 @@
 
 int main(int argc, char **argv) {
     struct digraph *graph = newDigraph();
-    int i;
+    //int i;
     /*
     addEdge(graph, 'A', 'B', 5);
     addEdge(graph, 'A', 'C', 4);
@@ -48,9 +48,8 @@ int main(int argc, char **argv) {
     addEdge(graph, 'E', 'C', 10);
     addEdge(graph, 'C', 'E', 10);
     
-
+    addEdge(graph, 'G', 'H', 30);
     dijkstra(graph, graph->vertex[0]);
-    
     freeDigraph(graph);
     return 0;
 }

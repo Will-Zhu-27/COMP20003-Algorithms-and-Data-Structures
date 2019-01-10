@@ -1,5 +1,5 @@
-/* my dijkstra function for single source directed graph 
-    directed graph must be single source.
+/*  my dijkstra function for finding shortest path from one vertex
+    in directed graph, no matter single source or multi cource.
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,6 +33,7 @@ struct dijkstraQueue {
     int dist;
     struct dijkstraQueue *pred;
 };
+
 struct dijkstraQueue *initialize(struct digraph *graph, int sourceIndex) {
     int i;
     struct dijkstraQueue *dq = (struct dijkstraQueue *)malloc(sizeof(struct dijkstraQueue) * graph->capacity);
@@ -69,7 +70,7 @@ void printShortestPathInfo(struct dijkstraQueue *dq, int sourceIndex, int capaci
         if (i == sourceIndex) {
             continue;
         }
-        if (!dq[i].pred) {
+        if (!dq[i].pred || dq[i].dist == INT_MAX) {
             printf("From vertex %c to %c, no path.\n", dq[sourceIndex].vertex, dq[i].vertex);
             continue;
         }
@@ -111,7 +112,7 @@ void run(struct dijkstraQueue *dq, int capacity) {
         edge = dSourceVertex->edge;
         while (edge) {
             dDestVertex = &(dq[retDijkstraQueueIndex(dq, edge->destVertex, capacity)]);
-            if (dSourceVertex->dist + edge->weight < dDestVertex->dist) {
+            if (dSourceVertex->dist != INT_MAX && dSourceVertex->dist + edge->weight < dDestVertex->dist) {
                 dDestVertex->dist = dSourceVertex->dist + edge->weight;
                 dDestVertex->pred = dSourceVertex;
                 if(!changePriority(pq, dDestVertex, -dDestVertex->dist)) {
