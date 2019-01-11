@@ -22,9 +22,9 @@ void fw(int **adjMatrix, int ***pathMatrix, int size){
     for (i = 0; i < size; i++) {
         for (s = 0; s < size; s++) {
             for (t = 0; t < size; t++) {
-                if (adjMatrix[i][s] + adjMatrix[s][t] < adjMatrix[i][t]) {
-                    adjMatrix[i][t] = adjMatrix[i][s] + adjMatrix[s][t];
-                    (*pathMatrix)[i][t] = s;
+                if (adjMatrix[s][i] + adjMatrix[i][t] < adjMatrix[s][t]) {
+                    adjMatrix[s][t] = adjMatrix[s][i] + adjMatrix[i][t];
+                    (*pathMatrix)[s][t] = i;
                 }
             }
         }
