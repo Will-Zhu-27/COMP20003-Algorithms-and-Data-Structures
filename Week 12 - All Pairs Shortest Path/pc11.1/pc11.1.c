@@ -53,9 +53,9 @@ int main(int argc, char **argv){
     printf("Begin\n");
     fw(graph, &pathMatrix, SIZE);
     printPath(pathMatrix, home, firstPoint);
-    printPath(pathMatrix, firstPoint, secondPoint);
-    printPath(pathMatrix, secondPoint, thirdPoint);
-    printPath(pathMatrix, thirdPoint, home);
+    //printPath(pathMatrix, firstPoint, secondPoint);
+    //printPath(pathMatrix, secondPoint, thirdPoint);
+    //printPath(pathMatrix, thirdPoint, home);
     /*
     printf("finish fw function\n");
     maxDist += shortestDist(graph, pathMatrix, SIZE, home, firstPoint);
